@@ -60,8 +60,23 @@ def get_file_key(file):
     return key
 
 
-def process_equal_file(new_f, old_f):
-    print(new_f, old_f)
+def compare_with_binary(left, right):
+    flag = True
+    with open(left, 'rb') as l_f:
+        with open(right, 'rb') as r_f:
+            while True:
+                l = l_f.read(4096)
+                r = r_f.read(4096)
+                if l != r:
+                    flag = False
+    return flag
+
+
+def process_equal_file(new_f, old_f, file_key):
+    if compare_with_binary(new_f, old_f):
+        print(file_key, new_f, old_f)
+    else:
+        print("binary not equal:", file_key, new_f, old_f)
     global _equal_file_num
     _equal_file_num += 1
 
@@ -78,7 +93,7 @@ def create_files_dictionary(root_path, file_dict):
             # print(full_file_name)
             file_key = get_file_key(full_file_name)
             if file_key in file_dict:
-                process_equal_file(full_file_name, file_dict[file_key])
+                process_equal_file(full_file_name, file_dict[file_key], file_key)
             else:
                 file_dict[file_key] = full_file_name
 
