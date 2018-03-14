@@ -49,7 +49,8 @@ def get_file_key(file):
 
     key = get_file_size(file)
     # if file size over 8M, then use file size as key
-    if key < (8 * 1024 * 1024):
+    # 20180314 suit for photo raw file: all file has one size
+    if key < (32 * 1024 * 1024):
         key = get_hash_key(file)
 
     after_time = time.time()
@@ -87,7 +88,7 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('e:/', file_dict)
+    create_files_dictionary('F:/photo', file_dict)
 
     print("equal file num:", _equal_file_num)
 
