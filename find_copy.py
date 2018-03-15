@@ -9,6 +9,8 @@
 #  it under the terms of the GNU General Public License version 3 as
 #  published by the Free Software Foundation.
 #  2018.3.13 optimization speed
+#  2018.3.14 suit for photo raw file: all file has one size, reset low length to 32M
+#  2018.3.15 for size equal file, execute binary compare
 
 import os
 import hashlib
@@ -17,6 +19,14 @@ import time
 
 _total_file_num = 0
 _equal_file_num = 0
+_debug_flag_ = False
+
+
+def my_output(level, prt_str):
+    if level == 0:
+        print(prt_str)
+    if level == 1 and _debug_flag_:
+        print(prt_str)
 
 
 def get_hash_key(file):
@@ -54,31 +64,38 @@ def get_file_key(file):
         key = get_hash_key(file)
 
     after_time = time.time()
-    if False:
-        print(after_time - before_time)
+    my_output(1, (after_time - before_time))
 
     return key
 
 
 def compare_with_binary(left, right):
-    flag = True
+    if get_file_size(left) != get_file_size(right):
+        ptr_str = "exception: key equal and size not equal: %s <--> %s" % (left, right)
+        my_output(0, ptr_str)
+        return False
+
     with open(left, 'rb') as l_f:
         with open(right, 'rb') as r_f:
             while True:
-                l = l_f.read(4096)
-                r = r_f.read(4096)
-                if l != r:
-                    flag = False
-    return flag
+                l_v = l_f.read(4096)
+                r_v = r_f.read(4096)
+                if l_v != r_v:
+                    return False
+                if not l_v and not r_v:
+                    break
+    return True
 
 
 def process_equal_file(new_f, old_f, file_key):
     if compare_with_binary(new_f, old_f):
-        print(file_key, new_f, old_f)
+        ptr_str = "binary equal, key: 0x%x; file: %s <--> %s" % (file_key, new_f, old_f)
+        my_output(0, ptr_str)
+        global _equal_file_num
+        _equal_file_num += 1
     else:
-        print("binary not equal:", file_key, new_f, old_f)
-    global _equal_file_num
-    _equal_file_num += 1
+        ptr_str = "binary not equal, key: 0x%x; file: %s <--> %s" % (file_key, new_f, old_f)
+        my_output(1, ptr_str)
 
 
 def create_files_dictionary(root_path, file_dict):
@@ -87,10 +104,11 @@ def create_files_dictionary(root_path, file_dict):
             global _total_file_num
             _total_file_num += 1
             if _total_file_num % 10000 == 0:
-                print("file num:", _total_file_num)
+                ptr_str = "file number:%d" % _total_file_num
+                my_output(1, ptr_str)
 
             full_file_name = os.path.join(cur_path, file)
-            # print(full_file_name)
+            my_output(1, full_file_name)
             file_key = get_file_key(full_file_name)
             if file_key in file_dict:
                 process_equal_file(full_file_name, file_dict[file_key], file_key)
@@ -103,10 +121,12 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('F:/photo', file_dict)
+    create_files_dictionary('E:\\test', file_dict)
 
-    print("equal file num:", _equal_file_num)
+    ptr_str = "equal file number:%d" % _equal_file_num
+    my_output(0, ptr_str)
 
 
 if __name__ == '__main__':
     find_entry()
+
