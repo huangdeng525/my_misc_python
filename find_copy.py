@@ -11,6 +11,7 @@
 #  2018.3.13 optimization speed
 #  2018.3.14 suit for photo raw file: all file has one size, reset low length to 32M
 #  2018.3.15 for size equal file, execute binary compare
+#  2018.3.16 exclude file of size 0
 
 import os
 import hashlib
@@ -58,10 +59,14 @@ def get_file_key(file):
     before_time = time.time()
 
     key = get_file_size(file)
+    if key == 0:
+        return 0
     # if file size over 8M, then use file size as key
     # 20180314 suit for photo raw file: all file has one size
     if key < (32 * 1024 * 1024):
         key = get_hash_key(file)
+    else:
+        key = str(key)
 
     after_time = time.time()
     my_output(1, (after_time - before_time))
@@ -89,7 +94,7 @@ def compare_with_binary(left, right):
 
 def process_equal_file(new_f, old_f, file_key):
     if compare_with_binary(new_f, old_f):
-        ptr_str = "binary equal, key: 0x%x; file: %s <--> %s" % (file_key, new_f, old_f)
+        ptr_str = "binary equal, key: %s; file: %s <--> %s" % (file_key, new_f, old_f)
         my_output(0, ptr_str)
         global _equal_file_num
         _equal_file_num += 1
@@ -110,6 +115,8 @@ def create_files_dictionary(root_path, file_dict):
             full_file_name = os.path.join(cur_path, file)
             my_output(1, full_file_name)
             file_key = get_file_key(full_file_name)
+            if file_key == 0:
+                continue
             if file_key in file_dict:
                 process_equal_file(full_file_name, file_dict[file_key], file_key)
             else:
@@ -121,7 +128,7 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('E:\\test', file_dict)
+    create_files_dictionary('/media/chm', file_dict)
 
     ptr_str = "equal file number:%d" % _equal_file_num
     my_output(0, ptr_str)
