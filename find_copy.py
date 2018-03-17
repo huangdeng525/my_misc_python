@@ -35,8 +35,8 @@ def my_output(level, prt_str):
 
 def print_my_output():
     global _out_str
-    for i in _out_str:
-        print(i)
+    for info in _out_str:
+        print(info)
 
 
 def get_hash_key(file):
@@ -109,7 +109,7 @@ def process_equal_file(new_f, old_f, file_key):
         _equal_file_num += 1
     else:
         ptr_str = "\n binary not equal, key: %s;\n file: %s\n <--> %s" % (file_key, new_f, old_f)
-        my_output(0, ptr_str)
+        my_output(1, ptr_str)
 
 
 def create_files_dictionary(root_path, file_dict):
@@ -137,11 +137,11 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('F:\\photo', file_dict)
+    create_files_dictionary('/media/chm/新加卷1/photo', file_dict)
 
-    ptr_str = "equal file number:%d" % _equal_file_num
+    ptr_str = "\nequal file number:%d\n" % _equal_file_num
     print(ptr_str)
-    print_my_output
+    print_my_output()
 
 
 if __name__ == '__main__':
