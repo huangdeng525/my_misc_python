@@ -21,13 +21,22 @@ import time
 _total_file_num = 0
 _equal_file_num = 0
 _debug_flag_ = False
+_out_str = []
 
 
 def my_output(level, prt_str):
+    global _out_str
     if level == 0:
-        print(prt_str)
+        _out_str.append(prt_str)
+        #print(prt_str)
     if level == 1 and _debug_flag_:
-        print(prt_str)
+        _out_str.append(prt_str)
+
+
+def print_my_output():
+    global _out_str
+    for i in _out_str:
+        print(i)
 
 
 def get_hash_key(file):
@@ -94,13 +103,13 @@ def compare_with_binary(left, right):
 
 def process_equal_file(new_f, old_f, file_key):
     if compare_with_binary(new_f, old_f):
-        ptr_str = "binary equal, key: %s; file: %s <--> %s" % (file_key, new_f, old_f)
+        ptr_str = "\n binary equal, key: %s;\n file: %s\n    <--> %s" % (file_key, new_f, old_f)
         my_output(0, ptr_str)
         global _equal_file_num
         _equal_file_num += 1
     else:
-        ptr_str = "binary not equal, key: 0x%x; file: %s <--> %s" % (file_key, new_f, old_f)
-        my_output(1, ptr_str)
+        ptr_str = "\n binary not equal, key: %s;\n file: %s\n <--> %s" % (file_key, new_f, old_f)
+        my_output(0, ptr_str)
 
 
 def create_files_dictionary(root_path, file_dict):
@@ -108,9 +117,9 @@ def create_files_dictionary(root_path, file_dict):
         for file in files:
             global _total_file_num
             _total_file_num += 1
-            if _total_file_num % 10000 == 0:
-                ptr_str = "file number:%d" % _total_file_num
-                my_output(1, ptr_str)
+            if _total_file_num % 10 == 0:
+                ptr_str = "\rfile number:%d -->%s" % (_total_file_num, cur_path)
+                print(ptr_str, end='', flush=True)
 
             full_file_name = os.path.join(cur_path, file)
             my_output(1, full_file_name)
@@ -128,10 +137,11 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('/media/chm', file_dict)
+    create_files_dictionary('F:\\photo', file_dict)
 
     ptr_str = "equal file number:%d" % _equal_file_num
-    my_output(0, ptr_str)
+    print(ptr_str)
+    print_my_output
 
 
 if __name__ == '__main__':
