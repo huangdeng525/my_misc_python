@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 # find_copy.py
 # 
 #  find the equal file in filesystem
@@ -12,6 +13,8 @@
 #  2018.3.14 suit for photo raw file: all file has one size, reset low length to 32M
 #  2018.3.15 for size equal file, execute binary compare
 #  2018.3.16 exclude file of size 0
+
+__author__ = 'huangdeng'
 
 import os
 import hashlib
@@ -137,7 +140,7 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('/media/chm/新加卷1/photo', file_dict)
+    create_files_dictionary('/media/chm/Extend', file_dict)
 
     ptr_str = "\nequal file number:%d\n" % _equal_file_num
     print(ptr_str)

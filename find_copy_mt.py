@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 # find_copy.py
 # 
 #  find the equal file in filesystem, multi threading version
@@ -15,6 +16,7 @@
 # step 2: calc hash by multi thread
 # step 3: assemble the result
 
+__author__ = 'huangdeng'
 
 class MyLocker:
     def __init__(self):
@@ -51,7 +53,7 @@ class FileCollect:
         """call by single thread"""
         self._files.append(fullname)
 
-    def get(self)
+    def get(self):
         """call by multi thread"""
         self._obj_lock.lock()
         # pop one file
@@ -60,7 +62,7 @@ class FileCollect:
 
 
 # multi instance
-class CalcHash():
+class CalcHash:
     """docstring for CalcHash"""
     def __init__(self, files, confict_recorder):
         self._files = files
