@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # find_copy.py
 # 
-#  find the equal file in filesystem, mulitthreading version
+#  find the equal file in filesystem, multi threading version
 # 
 #  Copyright (C) 2018-2018 huangdeng @ chengdu
 # 
@@ -10,55 +10,49 @@
 #  published by the Free Software Foundation.
 #  2018.3.24 init 
 
-# desigen:
+# design:
 # step 1: collect all file's name by single thread
 # step 2: calc hash by multi thread
 # step 3: assemble the result
 
 
-class MyLocker():
-    def __init__(self)
+class MyLocker:
+    def __init__(self):
         pass
 
-    def lock(self)
+    def lock(self):
         pass
 
-    def unlock(self)
+    def unlock(self):
         pass
 
 
-# one instance
-class ConfictFile():
-	def __init__(self, obj_lock)
+# multi instance
+class ConflictFile:
+    def __init__(self):
         self._record = []
-        self._obj_lock = obj_lock
-		pass
 
-	def add(self, confict_info)
-        '''call by multi thread'''
-        self._obj_lock.lock()
-        self._record.append(confict_info)
-        self._obj_lock.unlock()
+    def add(self, info):
+        self._record.append(info)
 
-    def output(self)
-        '''call by single thread'''
+    def output(self):
         for one_info in self._record:
             print(one_info)
 
 
 # one instance
-class FileCollect():
+class FileCollect:
     """docstring for FileCollect"""
     def __init__(self, obj_lock):
         self._obj_lock = obj_lock
         self._files = []
 
-    def add(self, fullname)
-        '''call by single thread'''
+    def add(self, fullname):
+        """call by single thread"""
         self._files.append(fullname)
 
     def get(self)
-        '''call by multi thread'''
+        """call by multi thread"""
         self._obj_lock.lock()
         # pop one file
 
