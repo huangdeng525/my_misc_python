@@ -20,7 +20,6 @@ import os
 import hashlib
 import time
 
-
 _total_file_num = 0
 _equal_file_num = 0
 _debug_flag_ = False
