@@ -21,6 +21,7 @@ __author__ = 'huangdeng'
 import hashlib
 import concurrent.futures
 import os
+import time
 
 
 def get_hash_key(file):
@@ -28,7 +29,7 @@ def get_hash_key(file):
     f = open(file, 'rb')
 
     while True:
-        b = f.read(4096)
+        b = f.read(2*1024*1024)
         if not b:
             break
         my_hash.update(b)
@@ -92,23 +93,31 @@ class FindEqual:
         for cur_path, dirs, files in os.walk(self._root):
             for file in files:
                 full_path = os.path.join(cur_path, file)
-                self._files.append(full_path)
+                if (1024*1024) < get_file_size(full_path) < (32 * 1024 * 1024):
+                    self._files.append(full_path)
+                else:
+                    self.inc()
+                    key = get_file_key(full_path)
+                    self.inset_key(key, full_path)
 
     def parallel_get_key(self):
         print('total collect file number:', len(self._files))
         with concurrent.futures.ProcessPoolExecutor() as executor:
             for file, file_key in zip(self._files, executor.map(get_file_key, self._files)):
-                self._total_file += 1
-                #if self._total_file % 10 == 0:
-                    # ptr_str = "\rfile number:%d -->%s" % (self._total_file, file)
-                    #print(ptr_str, end='', flush=True)
+                self.inc()
+                # if self._total_file % 10 == 0:
+                # ptr_str = "\rfile number:%d -->%s" % (self._total_file, file)
+                # print(ptr_str, end='', flush=True)
 
-                if file_key == 0:
-                    continue
-                if file_key in self._dict:
-                    self.process_equal_file(file, self._dict[file_key], file_key)
-                else:
-                    self._dict[file_key] = file
+                self.inset_key(file_key, file)
+
+    def inset_key(self, file_key, file):
+        if file_key == 0:
+            return
+        if file_key in self._dict:
+            self.process_equal_file(file, self._dict[file_key], file_key)
+        else:
+            self._dict[file_key] = file
 
     def run(self):
         self.collect_files()
@@ -127,10 +136,18 @@ class FindEqual:
             #self._out.append(ptr_str)
             pass
 
+    def inc(self):
+        self._total_file += 1
+        if self._total_file % 10 == 0:
+            ptr_str = "\rfile number:%d" % self._total_file
+            print(ptr_str, end='', flush=True)
+
 
 def find_entry():
-    process = FindEqual('E:/')
+    before = time.time()
+    process = FindEqual('/media/chm/Extend/pic')
     process.run()
+    print('total time:', time.time() - before)
 
 
 if __name__ == '__main__':

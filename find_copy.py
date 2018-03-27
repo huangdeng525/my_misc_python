@@ -46,7 +46,7 @@ def get_hash_key(file):
     f = open(file, 'rb')
 
     while True:
-        b = f.read(4096)
+        b = f.read(2*1024*1024)
         if not b:
             break
         my_hash.update(b)
@@ -135,15 +135,17 @@ def create_files_dictionary(root_path, file_dict):
 
 
 def find_entry():
+    before = time.time()
     global _total_file_num, _equal_file_num
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('/media/chm/Extend', file_dict)
+    create_files_dictionary('/media/chm/Extend/book', file_dict)
 
     ptr_str = "\nequal file number:%d\n" % _equal_file_num
     print(ptr_str)
     print_my_output()
+    print('totol time:', time.time()-before)
 
 
 if __name__ == '__main__':
