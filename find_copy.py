@@ -41,7 +41,7 @@ def print_my_output():
         print(info)
 
 
-def get_hash_key(file):
+def get_hash_key1(file):
     my_hash = hashlib.sha1()
     f = open(file, 'rb')
 
@@ -51,6 +51,14 @@ def get_hash_key(file):
             break
         my_hash.update(b)
     f.close()
+    return my_hash.hexdigest()
+
+
+def get_hash_key(file):
+    my_hash = hashlib.sha1()
+    with open(file, 'rb') as f:
+        b = f.read()
+        my_hash.update(b)
     return my_hash.hexdigest()
 
 
@@ -140,7 +148,7 @@ def find_entry():
     _total_file_num = 0
     _equal_file_num = 0
     file_dict = dict()
-    create_files_dictionary('/media/chm/Extend/book', file_dict)
+    create_files_dictionary(r'E:\picture', file_dict)
 
     ptr_str = "\nequal file number:%d\n" % _equal_file_num
     print(ptr_str)

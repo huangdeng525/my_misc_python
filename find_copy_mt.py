@@ -26,14 +26,9 @@ import time
 
 def get_hash_key(file):
     my_hash = hashlib.sha1()
-    f = open(file, 'rb')
-
-    while True:
-        b = f.read(2*1024*1024)
-        if not b:
-            break
+    with open(file, 'rb') as f:
+        b = f.read()
         my_hash.update(b)
-    f.close()
     return my_hash.hexdigest()
 
 
@@ -145,7 +140,7 @@ class FindEqual:
 
 def find_entry():
     before = time.time()
-    process = FindEqual('/media/chm/Extend/pic')
+    process = FindEqual(r'F:\photo\canon')
     process.run()
     print('total time:', time.time() - before)
 
