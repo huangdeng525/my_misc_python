@@ -12,7 +12,7 @@
 
 import os
 import hashlib
-import time
+# import time
 
 
 def get_hash_key(file):
@@ -49,7 +49,7 @@ def get_file_key(file):
     return key
 
 
-def compare_with_binary(left, right):
+def binary_equal(left, right):
     if get_file_size(left) != get_file_size(right):
         return False
 
@@ -65,19 +65,108 @@ def compare_with_binary(left, right):
     return True
 
 
-def process_equal_file(new_f, old_f, file_key):
-    if compare_with_binary(new_f, old_f):
-        pass
-    else:
+class DirectoryHash:
+    def __init__(self, root):
+        self._root = root
+        self._dict = dict()
+        self._conflict = []
 
+    def add_conflict_info(self, l_f, r_f):
+        info = '\nrm %s\n # %s' % (l_f, r_f)
+        self._conflict.append(info)
+
+    def run(self):
+        for cur_path, dirs, files in os.walk(self._root):
+            for file in files:
+                full_path = os.path.join(cur_path, file)
+                key = get_file_key(full_path)
+                if key == 0:
+                    continue
+
+                if key in self._dict:
+                    self.first_equal(full_path, self._dict[key])
+                else:
+                    self._ref_dict[key] = full_path
+
+    def first_equal(self, cur_file, dict_file):
+        if binary_equal(cur_file, dict_file):
+            self.add_conflict_info(cur_file, dict_file)
+        else:
+            key = get_hash_key(cur_file)
+            if key in self._dict:
+                assert False
+            else:
+                self._dict[key] = cur_file
 
 
 class CmpDirectory:
-    def __init__(self, is_del, ref_dir, to_check_dir):
-        self._is_del = is_del
+    def __init__(self, del_resit, ref_dir, to_check_dir):
+        self._del_resit = del_resit
         self._ref_dir = ref_dir
         self._to_check_dir = to_check_dir
 
+        self._ref_dict = dict()
+        self._to_check_dict = dict()
+        self._ref_conflict_info = []
+        self._to_check_conflict_info = []
+
     def run(self):
-        build_ref_dict()
-        if
+        self.build_ref_dict()
+        if self._del_resit:
+            self.check_and_del()
+        else:
+            self.only_check()
+
+    def build_ref_dict(self):
+        for cur_path, dirs, files in os.walk(self._ref_dir):
+            for file in files:
+                full_path = os.path.join(cur_path, file)
+                key = get_file_key(full_path)
+                if key in self._ref_dict:
+                    self.first_conflict(key, full_path)
+                else:
+                    self._ref_dict[key] = full_path
+
+    @staticmethod
+    def first_conflict(key, full_path, t_dict, t_info):
+        """
+        if key
+        :param key:
+        :param full_path:
+        :param t_dict:
+        :param t_info:
+        :return:
+        """
+        if key == str(get_file_size(full_path)):
+            new_key = get_hash_key(full_path)
+            if new_key not in t_dict:
+                t_dict[new_key] = full_path
+                return
+
+        compare
+
+    def check_and_del(self):
+        pass
+
+    def only_check(self):
+        pass
+
+    def create_ref_conflict_info(self, l_file, r_file):
+        pass
+
+    def create_to_check_conflict_info(self, l_file, r_file):
+        pass
+
+    @staticmethod
+    def delete_to_check_conflict_file(file):
+        os.remove(file)
+
+
+
+
+def cmp_entity():
+    pass
+
+
+if __name__ == '__main__':
+    cmp_entity()
