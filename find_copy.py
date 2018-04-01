@@ -100,7 +100,7 @@ def compare_with_binary(left, right):
 
 def process_equal_file(new_f, old_f, file_key):
     if compare_with_binary(new_f, old_f):
-        ptr_str = "\n # %s\n rm %s" % (new_f, old_f)
+        ptr_str = "\n #  \"%s\"\n rm \"%s\"" % (new_f, old_f)
         my_output(0, ptr_str)
         global _equal_file_num
         _equal_file_num += 1
