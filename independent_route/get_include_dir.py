@@ -25,4 +25,4 @@ def get_include_dir(root, replace_with):
 
 
 if __name__ == '__main__':
-        get_include_dir(r'E:\github\dcop', r'..\..\..')
+        get_include_dir(r'E:\github\dcop', r'-I ..\..\..')
