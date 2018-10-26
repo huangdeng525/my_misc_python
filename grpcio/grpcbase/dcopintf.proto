@@ -4,8 +4,8 @@ package GrpcDcopPb;
 
 service GrpcRequest
 {
-	rpc ProcessRequest(PbRequest)returns(PbResult){}
-	rpc CommandLineResult(PbRequest)returns(PbResult){}
+	rpc ProcessRequest(PbRequest)returns(stream PbResult){}
+	rpc CommandLineResult(PbRequest)returns(stream PbResult){}
 }
 
 service Notify2NCS
@@ -14,7 +14,7 @@ service Notify2NCS
 }
 
 message PbRequest {
-	string CmdLine = 1;
+	repeated string CmdLine = 1;
 }
 
 message PbResult {
