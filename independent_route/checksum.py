@@ -49,7 +49,18 @@ def check_all(root, check_sum_file):
                 print('Check Failed File:', full_name)
 
 
+def check_file():
+    file = r'C:\Users\CHM\Downloads\Everything-1.4.1.895.x64.zip'
+    checksum = 'e7c0e506b9c308f3d1857288855eeda6d8ec3504b3a7f01474c5dcea495ab9d9'
+    rc = check(file, checksum, 'sha256')
+    if rc:
+        print('Check Pass!')
+    else:
+        print('CheckFiled')
+
+
 if __name__ == '__main__':
-    root = r'E:\weiyun\python'
-    check_sum_file = 'checksum.txt'
-    check_all(root, check_sum_file)
+    check_file()
+    #root = r'E:\weiyun\python'
+    #check_sum_file = 'checksum.txt'
+    #check_all(root, check_sum_file)
