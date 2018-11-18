@@ -73,8 +73,7 @@ class Unique:
 
 def test_entry():
     # 需保持的文件目录在前面，前后目录不能有重叠
-    to_check_dirs = [r'E:\weiyun\calibre',
-                     r'E:\weiyun\toaddbooks']
+    to_check_dirs = [r'E:\weiyun\calibre', r'E:\weiyun\toaddbooks']
     p = Unique()
     for one in to_check_dirs:
         p.process(one)

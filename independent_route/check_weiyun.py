@@ -10,11 +10,11 @@
 #  it under the terms of the GNU General Public License version 3 as
 #  published by the Free Software Foundation.
 #  2018.10.19 init
-
+import time
 import hashlib
 import os
 import json
-
+import struct
 
 def get_hash():
     return hashlib.sha256()
@@ -28,12 +28,12 @@ def get_file_checksum(file):
 
 
 class Check:
-    def __init__(self, root):
+    def __init__(self, root, record):
         self._root = root
         self._skip = len(root)
         self._to_checksum = dict()
         self._build_checksum = dict()
-        self._check_file = os.path.join(root, 'mycheck.json')
+        self._check_file = os.path.join(root, record)
 
     def load_checksum(self):
         with open(self._check_file) as f:
@@ -60,5 +60,10 @@ class Check:
 
 
 if __name__ == '__main__':
-    p = Check('D:\weiyun')
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    start = time.time()
+    record = 'mycheck_c.json'
+    p = Check('E:\weiyun', record)
     p.build()
+    end = time.time()
+    print(end-start)
