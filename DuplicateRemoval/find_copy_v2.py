@@ -27,8 +27,11 @@ class Unique:
     def _get_key(full_name):
         my_hash = hashlib.sha1()
         with open(full_name, 'rb') as f:
-            b = f.read()
-            my_hash.update(b)
+            while True:
+                b = f.read(100*1024*1024)
+                if not b:
+                    break
+                my_hash.update(b)
         return my_hash.hexdigest()
 
     def _process_equal(self, full_name, key):
@@ -62,6 +65,7 @@ class Unique:
         print('####### Equal files: #######')
         for one in self._equal_files:
             print('Ori:', one[0])
+            #print('del "', one[0], '"', sep='')
             print('del "', one[1], '"', sep='')
             print('')
         print('####### Empty files: #######')
@@ -73,7 +77,7 @@ class Unique:
 
 def test_entry():
     # 需保持的文件目录在前面，前后目录不能有重叠
-    to_check_dirs = [r'E:\weiyun\calibre', r'E:\weiyun\toaddbooks']
+    to_check_dirs = [r'E:\software', r'E:\software_old']
     p = Unique()
     for one in to_check_dirs:
         p.process(one)
