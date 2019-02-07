@@ -18,6 +18,7 @@ class PhotoInfo:
     def __init__(self, in_file):
         with open(in_file, mode='rb') as f:
             self._tags = exifread.process_file(f)
+            print(self._tags)
 
     def get_camera_type(self):
         if 'Image Model' in self._tags:
@@ -32,6 +33,8 @@ class PhotoInfo:
     def get_size(self):
         if 'Image ImageWidth' in self._tags:
             return self._tags['Image ImageWidth'].values[0], self._tags['Image ImageLength'].values[0]
+        elif 'Image' in self._tags:
+            return self._tags['Width'].values[0], self._tags['Height'].values[0]
         return None
 
 
