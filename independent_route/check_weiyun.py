@@ -56,7 +56,7 @@ class Check:
     def build(self):
         self.build_checksum()
         with open(self._check_file, 'w') as f:
-            f.write(json.dumps(self._build_checksum, indent=4))
+            f.write(json.dumps(self._build_checksum, indent=4, ensure_ascii=False))
 
 
 if __name__ == '__main__':
