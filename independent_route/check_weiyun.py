@@ -33,7 +33,7 @@ class Check:
         self._skip = len(root)
         self._to_checksum = dict()
         self._build_checksum = dict()
-        self._check_file = os.path.join(root, record)
+        self._check_file = record
 
     def load_checksum(self):
         with open(self._check_file) as f:
@@ -62,8 +62,8 @@ class Check:
 if __name__ == '__main__':
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     start = time.time()
-    record = 'mycheck_c.json'
-    p = Check('E:\weiyun', record)
+    record = 'D:\weiyun\sync\mycheck.json'
+    p = Check('D:\weiyun\calibre', record)
     p.build()
     end = time.time()
     print(end-start)
