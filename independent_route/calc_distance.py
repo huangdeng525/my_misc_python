@@ -13,14 +13,29 @@
 import math
 
 # to change
-sat_longitude = 10
+sat_longitude = 126.4
+earth_latitude = 39.9
+earth_longitude = 116.4
 
 # include earth radius
 earth_radius = 6378
-sat_high = 35768 + earth_radius
+sat_high = 35786 + earth_radius
+
+max_distance = 300000 * 0.003
 
 
-def cal_disatance(latitude, longitude):
+const_parameter = 0.01745
+def cal_distance_e(latitude, longitude):
+    # Step 1) Determine the diﬀerential longitude, B, Eq. (2.10):
+    B = longitude - sat_longitude
+
+    # used const_parameta
+    d = math.sqrt(earth_radius * earth_radius + sat_high * sat_high - 2 * earth_radius * sat_high * math.cos(latitude*const_parameter) * math.cos(B*const_parameter))
+    return d
+
+
+def cal_distance(latitude, longitude):
+    return cal_distance_e(latitude, longitude)
     # Step 1) Determine the diﬀerential longitude, B, Eq. (2.10):
     B = longitude - sat_longitude
 
@@ -30,11 +45,84 @@ def cal_disatance(latitude, longitude):
     fin_e = math
 
     # Step 3) Determine the range d, Eq. (2.15):
-    d = math.sqrt(earth_radius * earth_radius + sat_high * sat_high - 2 * earth_radius * sat_high * math.cos() * math.cos(B)) 
+    d = math.sqrt(earth_radius * earth_radius + sat_high * sat_high - 2 * earth_radius * sat_high * math.cos() * math.cos(B))
 
+
+def calc_boundary_lat(start_latitude, ref_longitude, central_point_distance):
+    flag = False
+    latitude = start_latitude
+    for x in range(180):
+        distance = cal_distance(latitude + 1, ref_longitude)
+        if abs(distance - central_point_distance) <= max_distance:
+            flag = True
+        if abs(distance - central_point_distance) > max_distance:
+            break
+        latitude += 1
+
+    n_flag = False
+    n_latitude = start_latitude
+    for x in range(180):
+        distance = cal_distance(latitude + 1, ref_longitude)
+        if abs(distance - central_point_distance) <= max_distance:
+            flag = True
+        if abs(distance - central_point_distance) > max_distance:
+            break
+        n_latitude -= 1
+
+    if flag and n_flag:
+        return [True, [latitude, n_latitude]]
+
+    return [False, [0,0]]
+
+
+def calc_boundary_long(start_longitude, ref_latitude, central_point_distance):
+    flag = False
+    longitude = start_longitude
+    for x in range(180):
+        distance = cal_distance(ref_latitude, longitude)
+        if abs(distance - central_point_distance) <= max_distance:
+            flag = True
+        if abs(distance - central_point_distance) > max_distance:
+            break
+        longitude += 1
+
+    n_flag = False
+    n_longitude = start_longitude
+    for x in range(180):
+        distance = cal_distance(ref_latitude, n_longitude)
+        if abs(distance - central_point_distance) <= max_distance:
+            flag = True
+        if abs(distance - central_point_distance) > max_distance:
+            break
+        n_longitude -= 1
+
+    if flag and n_flag:
+        return [True, [longitude, n_longitude]]
+
+    return [False, [0,0]]
 
 
 def calc():
-    latitude = 0
-    longitude = 0
+    # step 1 ??????????????
+    central_point_distance = cal_distance(earth_latitude, earth_longitude)
+    ref_latitude = int(earth_latitude)
+    ref_longitude = int(earth_longitude)
 
+    # step 2 ???1?????????max_distance?????
+    result_points = []
+
+    result = calc_boundary_long(ref_longitude, ref_latitude, central_point_distance)
+    if not result[0]:
+        return []
+
+    for x in range(result[1][0], result[1][1]):
+        point = calc_boundary_lat(ref_latitude, x, central_point_distance)
+        if result[0]:
+            result_points.append[]
+
+
+    return result_point
+
+
+if __name__ == '__main__':
+    print(calc())
