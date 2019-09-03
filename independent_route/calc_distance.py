@@ -50,26 +50,32 @@ def cal_distance(latitude, longitude):
 
 def calc_boundary_lat(start_latitude, ref_longitude, central_point_distance):
     flag = False
+    finded = False
     latitude = start_latitude
     for x in range(180):
         distance = cal_distance(latitude + 1, ref_longitude)
         if abs(distance - central_point_distance) <= max_distance:
             flag = True
         if abs(distance - central_point_distance) > max_distance:
+            if flag:
+                finded = True
             break
         latitude += 1
 
     n_flag = False
+    n_finded = False
     n_latitude = start_latitude
     for x in range(180):
-        distance = cal_distance(latitude + 1, ref_longitude)
+        distance = cal_distance(n_latitude - 1, ref_longitude)
         if abs(distance - central_point_distance) <= max_distance:
-            flag = True
+            n_flag = True
         if abs(distance - central_point_distance) > max_distance:
+            if n_flag:
+                n_finded = True
             break
         n_latitude -= 1
 
-    if flag and n_flag:
+    if finded and n_finded:
         return [True, [latitude, n_latitude]]
 
     return [False, [0,0]]
@@ -77,26 +83,32 @@ def calc_boundary_lat(start_latitude, ref_longitude, central_point_distance):
 
 def calc_boundary_long(start_longitude, ref_latitude, central_point_distance):
     flag = False
+    finded = False
     longitude = start_longitude
     for x in range(180):
-        distance = cal_distance(ref_latitude, longitude)
+        distance = cal_distance(ref_latitude, longitude + 1)
         if abs(distance - central_point_distance) <= max_distance:
             flag = True
         if abs(distance - central_point_distance) > max_distance:
+            if flag:
+                finded = True
             break
         longitude += 1
 
     n_flag = False
+    n_finded = False
     n_longitude = start_longitude
     for x in range(180):
-        distance = cal_distance(ref_latitude, n_longitude)
+        distance = cal_distance(ref_latitude, n_longitude - 1)
         if abs(distance - central_point_distance) <= max_distance:
-            flag = True
+            n_flag = True
         if abs(distance - central_point_distance) > max_distance:
+            if n_flag:
+                n_finded = True
             break
         n_longitude -= 1
 
-    if flag and n_flag:
+    if finded and n_finded:
         return [True, [longitude, n_longitude]]
 
     return [False, [0,0]]
@@ -115,13 +127,13 @@ def calc():
     if not result[0]:
         return []
 
-    for x in range(result[1][0], result[1][1]):
+    for x in range(result[1][1], result[1][0]):
         point = calc_boundary_lat(ref_latitude, x, central_point_distance)
-        if result[0]:
-            result_points.append[]
+        if point[0]:
+            result_points.append([x, point[1][0], point[1][1]])
 
 
-    return result_point
+    return result_points
 
 
 if __name__ == '__main__':
